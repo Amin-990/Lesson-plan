@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lesson Plan</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Custom styles for better button appearance */
         .btn-primary {
             background-image: linear-gradient(to right, #2563eb, #4f46e5);
             transition: all 0.3s ease-in-out;
@@ -21,7 +22,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
         .btn-secondary {
-            background-image: linear-gradient(to right, #f59e0b, #d97706); /* Orange gradient for summary */
+            background-image: linear-gradient(to right, #f59e0b, #d97706);
             transition: all 0.3s ease-in-out;
         }
         .btn-secondary:hover {
@@ -30,7 +31,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
         .btn-tertiary {
-            background-image: linear-gradient(to right, #14b8a6, #0d9488); /* Teal gradient for quiz */
+            background-image: linear-gradient(to right, #14b8a6, #0d9488);
             transition: all 0.3s ease-in-out;
         }
         .btn-tertiary:hover {
@@ -76,6 +77,29 @@
             90% { opacity: 1; }
             100% { opacity: 0; }
         }
+        .hide-btn {
+            background-color: #ef4444; /* Red color for hide button */
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* Full rounded */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            transition: background-color 0.2s ease-in-out;
+        }
+        .hide-btn:hover {
+            background-color: #dc2626; /* Darker red on hover */
+        }
+        .highlight-btn {
+            background-color: #ef4444; /* Red color for highlighted text */
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            font-weight: 600; /* font-semibold */
+            display: inline-block; /* To allow padding and margin */
+            margin-bottom: 0.5rem; /* mb-2 */
+            margin-left: 0.5rem; /* ml-2 for RTL */
+            white-space: nowrap; /* Prevent text from wrapping inside the button */
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
@@ -83,26 +107,9 @@
     <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl transform transition-all duration-300 hover:scale-[1.01]">
         <h1 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">Lesson Plan</h1>
 
-        <div id="authSection" class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">سائن ان / نیا اکاؤنٹ بنائیں</h2>
-            <input type="email" id="emailInput" placeholder="ای میل" class="w-full p-3 border border-gray-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500" dir="ltr" />
-            <input type="password" id="passwordInput" placeholder="پاس ورڈ" class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" dir="ltr" />
-            <div class="flex justify-center space-x-4 space-x-reverse">
-                <button id="signInBtn" class="bg-blue-600 text-white py-2 px-6 rounded-xl hover:bg-blue-700 transition duration-300 ease-in-out font-bold shadow-md">
-                    سائن ان کریں
-                </button>
-                <button id="signUpBtn" class="bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700 transition duration-300 ease-in-out font-bold shadow-md">
-                    نیا اکاؤنٹ بنائیں
-                </button>
-            </div>
-            <p id="authStatus" class="mt-4 text-gray-700 text-sm text-center hidden">
-                <span id="userEmail"></span>
-                <button id="signOutBtn" class="text-red-500 hover:underline ml-2">سائن آؤٹ</button>
-            </p>
-            <div id="authError" class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg text-center border border-red-300 hidden"></div>
-        </div>
-
-        <div id="mainContent" class="hidden">
+        <!-- Main Content Section (always visible) -->
+        <div>
+            <!-- Image Upload Section (always visible) -->
             <div id="uploadSection" class="mb-6">
                 <label for="imageUpload" class="block text-gray-700 text-sm font-semibold mb-2">
                     کتاب کے صفحے کی تصویر منتخب کریں:
@@ -115,10 +122,12 @@
                 />
             </div>
 
+            <!-- Image Preview -->
             <div id="imagePreviewContainer" class="mt-4 mb-6 flex justify-center hidden">
                 <img id="imagePreview" alt="تصویر کا پیش نظارہ" class="max-h-64 rounded-lg shadow-md border border-gray-200 object-contain" />
             </div>
 
+            <!-- Action Buttons for Gemini API -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <button
                     id="generateLessonPlanBtn"
@@ -157,10 +166,16 @@
                 </button>
             </div>
 
+            <!-- Error Message -->
             <div id="errorMessage" class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg text-center border border-red-300 hidden"></div>
 
+            <!-- Lesson Plan Display -->
             <div id="lessonPlanContainer" class="mt-8 bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 hidden">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">تیار شدہ سبق کا منصوبہ</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800 text-center flex-grow">تیار شدہ سبق کا منصوبہ</h2>
+                    <button id="hideLessonPlanBtn" class="hide-btn">چھپائیں</button>
+                </div>
+                <!-- Font Size Controls -->
                 <div class="flex justify-center mb-4 space-x-2 space-x-reverse">
                     <button id="increaseFontBtn" class="btn-font-size py-1 px-4 rounded-full text-sm font-semibold">
                         لکھائی بڑی کریں
@@ -170,7 +185,8 @@
                     </button>
                 </div>
                 <div id="lessonPlanDisplay" class="whitespace-pre-wrap text-gray-700 leading-relaxed text-lg" style="font-family: 'Inter', sans-serif;">
-                    </div>
+                    <!-- Lesson plan content will be inserted here -->
+                </div>
                 <button
                     id="copyLessonPlanBtn"
                     class="mt-6 w-full btn-success text-white py-2 px-4 rounded-xl text-base font-semibold shadow-md"
@@ -180,10 +196,24 @@
                 <p id="lessonPlanCopyMessage" class="mt-2 text-center text-green-700 text-sm hidden"></p>
             </div>
 
+            <!-- Summary Display -->
             <div id="summaryContainer" class="mt-8 bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 hidden">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">تیار شدہ خلاصہ</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800 text-center flex-grow">تیار شدہ خلاصہ</h2>
+                    <button id="hideSummaryBtn" class="hide-btn">چھپائیں</button>
+                </div>
+                <!-- Font Size Controls for Summary -->
+                <div class="flex justify-center mb-4 space-x-2 space-x-reverse">
+                    <button id="increaseSummaryFontBtn" class="btn-font-size py-1 px-4 rounded-full text-sm font-semibold">
+                        لکھائی بڑی کریں
+                    </button>
+                    <button id="decreaseSummaryFontBtn" class="btn-font-size py-1 px-4 rounded-full text-sm font-semibold">
+                        لکھائی چھوٹی کریں
+                    </button>
+                </div>
                 <div id="summaryDisplay" class="whitespace-pre-wrap text-gray-700 leading-relaxed text-lg" style="font-family: 'Inter', sans-serif;">
-                    </div>
+                    <!-- Summary content will be inserted here -->
+                </div>
                 <button
                     id="copySummaryBtn"
                     class="mt-6 w-full btn-success text-white py-2 px-4 rounded-xl text-base font-semibold shadow-md"
@@ -193,10 +223,24 @@
                 <p id="summaryCopyMessage" class="mt-2 text-center text-green-700 text-sm hidden"></p>
             </div>
 
+            <!-- Quiz Questions Display -->
             <div id="quizContainer" class="mt-8 bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 hidden">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">تیار شدہ سوالات</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800 text-center flex-grow">تیار شدہ سوالات</h2>
+                    <button id="hideQuizBtn" class="hide-btn">چھپائیں</button>
+                </div>
+                <!-- Font Size Controls for Quiz -->
+                <div class="flex justify-center mb-4 space-x-2 space-x-reverse">
+                    <button id="increaseQuizFontBtn" class="btn-font-size py-1 px-4 rounded-full text-sm font-semibold">
+                        لکھائی بڑی کریں
+                    </button>
+                    <button id="decreaseQuizFontBtn" class="btn-font-size py-1 px-4 rounded-full text-sm font-semibold">
+                        لکھائی چھوٹی کریں
+                    </button>
+                </div>
                 <div id="quizDisplay" class="whitespace-pre-wrap text-gray-700 leading-relaxed text-lg" style="font-family: 'Inter', sans-serif;">
-                    </div>
+                    <!-- Quiz questions will be inserted here -->
+                </div>
                 <button
                     id="copyQuizBtn"
                     class="mt-6 w-full btn-success text-white py-2 px-4 rounded-xl text-base font-semibold shadow-md"
@@ -207,40 +251,28 @@
             </div>
         </div>
 
+        <!-- Design Credit -->
         <div class="mt-8 text-center text-gray-600 text-sm">
             Design by Qari Fazli Amin Mashwani
         </div>
     </div>
 
+    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global variables for Firebase instances and user
         let app;
         let db;
         let auth;
-        let currentUser = null; // Stores the authenticated Firebase user object
-        let currentFontSize = 18; // Default font size for lesson plan display
-
-        // DOM Elements
-        const authSection = document.getElementById('authSection');
-        const emailInput = document.getElementById('emailInput');
-        const passwordInput = document.getElementById('passwordInput');
-        const signInBtn = document.getElementById('signInBtn');
-        const signUpBtn = document.getElementById('signUpBtn');
-        const authStatus = document.getElementById('authStatus');
-        const userEmailSpan = document.getElementById('userEmail');
-        const signOutBtn = document.getElementById('signOutBtn');
-        const authErrorDiv = document.getElementById('authError');
-        const mainContent = document.getElementById('mainContent');
+        let currentUserId = null;
+        let currentFontSize = 18;
 
         const imageUploadInput = document.getElementById('imageUpload');
         const imagePreviewContainer = document.getElementById('imagePreviewContainer');
         const imagePreview = document.getElementById('imagePreview');
 
-        // New buttons for Gemini features
         const generateLessonPlanBtn = document.getElementById('generateLessonPlanBtn');
         const generateLessonPlanBtnText = document.getElementById('generateLessonPlanBtnText');
         const lessonPlanLoadingSpinner = document.getElementById('lessonPlanLoadingSpinner');
@@ -255,107 +287,70 @@
 
         const errorMessageDiv = document.getElementById('errorMessage');
 
-        // Display containers for results
         const lessonPlanContainer = document.getElementById('lessonPlanContainer');
         const lessonPlanDisplay = document.getElementById('lessonPlanDisplay');
         const copyLessonPlanBtn = document.getElementById('copyLessonPlanBtn');
         const lessonPlanCopyMessage = document.getElementById('lessonPlanCopyMessage');
+        const hideLessonPlanBtn = document.getElementById('hideLessonPlanBtn');
 
         const summaryContainer = document.getElementById('summaryContainer');
         const summaryDisplay = document.getElementById('summaryDisplay');
         const copySummaryBtn = document.getElementById('copySummaryBtn');
         const summaryCopyMessage = document.getElementById('summaryCopyMessage');
+        const hideSummaryBtn = document.getElementById('hideSummaryBtn');
+        const increaseSummaryFontBtn = document.getElementById('increaseSummaryFontBtn');
+        const decreaseSummaryFontBtn = document.getElementById('decreaseSummaryFontBtn');
 
         const quizContainer = document.getElementById('quizContainer');
         const quizDisplay = document.getElementById('quizDisplay');
         const copyQuizBtn = document.getElementById('copyQuizBtn');
         const quizCopyMessage = document.getElementById('quizCopyMessage');
+        const hideQuizBtn = document.getElementById('hideQuizBtn');
+        const increaseQuizFontBtn = document.getElementById('increaseQuizFontBtn');
+        const decreaseQuizFontBtn = document.getElementById('decreaseQuizFontBtn');
 
         const increaseFontBtn = document.getElementById('increaseFontBtn');
         const decreaseFontBtn = document.getElementById('decreaseFontBtn');
 
-        // Initialize Firebase on window load
         window.onload = async () => {
             try {
-                // For standalone APK, replace this with your actual Firebase config object:
-                // IMPORTANT: When building the APK, uncomment the following firebaseConfig object
-                // and replace the placeholder values with your actual Firebase project configuration.
-                // You can find this in your Firebase project settings -> Project settings -> General -> Your apps -> Web app.
-                const firebaseConfig = {
-                  apiKey: "YOUR_FIREBASE_API_KEY", // Replace with your Firebase API Key
-                  authDomain: "YOUR_PROJECT_ID.firebaseapp.com", // Replace with your Firebase Project ID
-                  projectId: "YOUR_PROJECT_ID", // Replace with your Firebase Project ID
-                  storageBucket: "YOUR_PROJECT_ID.appspot.com", // Replace with your Firebase Project ID
-                  messagingSenderId: "YOUR_SENDER_ID", // Replace with your Firebase Sender ID
-                  appId: "YOUR_APP_ID" // Replace with your Firebase App ID
-                };
-                // In the Canvas environment, __firebase_config is provided automatically.
-                // For APK, you MUST use the above firebaseConfig object and fill in your details.
-                // const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
                 
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // Listen for authentication state changes
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        currentUser = user;
-                        authSection.classList.add('hidden'); // Hide auth form
-                        mainContent.classList.remove('hidden'); // Show main content
-                        authStatus.classList.remove('hidden');
-                        userEmailSpan.textContent = `سائن ان: ${user.email || 'نامعلوم صارف'}`;
-                        updateGenerateButtonsState(); // Update button states based on auth and image
-                        console.log("صارف سائن ان ہے:", user.uid, user.email);
-                    } else {
-                        currentUser = null;
-                        authSection.classList.remove('hidden'); // Show auth form
-                        mainContent.classList.add('hidden'); // Hide main content
-                        authStatus.classList.add('hidden');
-                        updateGenerateButtonsState(); // Update button states
-                        console.log("کوئی صارف سائن ان نہیں ہے۔");
-                    }
-                    clearAuthError(); // Clear any auth errors on state change
-                });
+                const userCredential = await signInAnonymously(auth);
+                currentUserId = userCredential.user.uid;
+                console.log("صارف گمنام طور پر سائن ان ہے:", currentUserId);
+
+                updateGenerateButtonsState();
+                lessonPlanDisplay.style.fontSize = `${currentFontSize}px`;
+                summaryDisplay.style.fontSize = `${currentFontSize}px`;
+                quizDisplay.style.fontSize = `${currentFontSize}px`;
             } catch (err) {
                 console.error("فائر بیس شروع کرنے میں خرابی:", err);
                 displayError("ایپ شروع کرنے میں خرابی۔ براہ کرم دوبارہ کوشش کریں۔");
             }
         };
 
-        // Helper function to update the disabled state of all generation buttons
         function updateGenerateButtonsState() {
-            const isDisabled = !currentUser || !window.selectedImage;
+            const isDisabled = !window.selectedImage;
             generateLessonPlanBtn.disabled = isDisabled;
             generateSummaryBtn.disabled = isDisabled;
             generateQuizBtn.disabled = isDisabled;
         }
 
-        // Helper function to display general errors
         function displayError(message) {
             errorMessageDiv.textContent = message;
             errorMessageDiv.classList.remove('hidden');
         }
 
-        // Helper function to clear general errors
         function clearError() {
             errorMessageDiv.textContent = '';
             errorMessageDiv.classList.add('hidden');
         }
 
-        // Helper function to display authentication errors
-        function displayAuthError(message) {
-            authErrorDiv.textContent = message;
-            authErrorDiv.classList.remove('hidden');
-        }
-
-        // Helper function to clear authentication errors
-        function clearAuthError() {
-            authErrorDiv.textContent = '';
-            authErrorDiv.classList.add('hidden');
-        }
-
-        // Helper function to show temporary copy message
         function showCopyMessage(message, messageElement) {
             messageElement.textContent = message;
             messageElement.classList.remove('hidden');
@@ -365,101 +360,17 @@
             }, 3000);
         }
 
-        // Handle Sign In with Email/Password
-        signInBtn.addEventListener('click', async () => {
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            clearAuthError();
-
-            if (!email || !password) {
-                displayAuthError('براہ کرم ای میل اور پاس ورڈ درج کریں۔');
-                return;
-            }
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                // onAuthStateChanged will handle UI update
-            } catch (error) {
-                console.error("سائن ان میں خرابی:", error);
-                let userFriendlyMessage = 'سائن ان میں خرابی۔ براہ کرم دوبارہ کوشش کریں۔';
-                if (error.code === 'auth/user-not-found') {
-                    userFriendlyMessage = 'یہ ای میل رجسٹرڈ نہیں ہے۔';
-                } else if (error.code === 'auth/wrong-password') {
-                    userFriendlyMessage = 'غلط پاس ورڈ۔';
-                } else if (error.code === 'auth/invalid-email') {
-                    userFriendlyMessage = 'غلط ای میل فارمیٹ۔';
-                }
-                displayAuthError(userFriendlyMessage);
-            }
-        });
-
-        // Handle Sign Up with Email/Password
-        signUpBtn.addEventListener('click', async () => {
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            clearAuthError();
-
-            if (!email || !password) {
-                displayAuthError('براہ کرم ای میل اور پاس ورڈ درج کریں۔');
-                return;
-            }
-            if (password.length < 6) {
-                displayAuthError('پاس ورڈ کم از کم 6 حروف کا ہونا چاہیے۔');
-                return;
-            }
-
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                // onAuthStateChanged will handle UI update
-                displayAuthError('اکاؤنٹ کامیابی سے بنایا گیا! اب آپ سائن ان کر سکتے ہیں۔'); // Inform user
-            } catch (error) {
-                console.error("سائن اپ میں خرابی:", error);
-                let userFriendlyMessage = 'اکاؤنٹ بنانے میں خرابی۔ براہ کرم دوبارہ کوشش کریں۔';
-                if (error.code === 'auth/email-already-in-use') {
-                    userFriendlyMessage = 'یہ ای میل پہلے ہی استعمال میں ہے۔ براہ کرم سائن ان کریں۔';
-                } else if (error.code === 'auth/invalid-email') {
-                    userFriendlyMessage = 'غلط ای میل فارمیٹ۔';
-                } else if (error.code === 'auth/weak-password') {
-                    userFriendlyMessage = 'پاس ورڈ بہت کمزور ہے۔';
-                }
-                displayAuthError(userFriendlyMessage);
-            }
-        });
-
-        // Handle Sign Out
-        signOutBtn.addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                // onAuthStateChanged will handle UI update
-                clearError(); // Clear any general errors
-                lessonPlanContainer.classList.add('hidden'); // Hide lesson plan
-                lessonPlanDisplay.textContent = '';
-                summaryContainer.classList.add('hidden'); // Hide summary
-                summaryDisplay.textContent = '';
-                quizContainer.classList.add('hidden'); // Hide quiz
-                quizDisplay.textContent = '';
-                imagePreviewContainer.classList.add('hidden'); // Hide image preview
-                imagePreview.src = '';
-                window.selectedImage = null; // Clear selected image
-                imageUploadInput.value = ''; // Clear file input
-            } catch (error) {
-                console.error("سائن آؤٹ میں خرابی:", error);
-                displayError('سائن آؤٹ میں خرابی۔');
-            }
-        });
-
-        // Handle image file selection (for upload method)
         imageUploadInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
-                window.selectedImage = file; // Store file globally for access
+                window.selectedImage = file;
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     imagePreview.src = reader.result;
                     imagePreviewContainer.classList.remove('hidden');
                 };
                 reader.readAsDataURL(file);
-                updateGenerateButtonsState(); // Update button states
+                updateGenerateButtonsState();
                 clearError();
                 lessonPlanContainer.classList.add('hidden');
                 lessonPlanDisplay.textContent = '';
@@ -471,26 +382,20 @@
                 window.selectedImage = null;
                 imagePreviewContainer.classList.add('hidden');
                 imagePreview.src = '';
-                updateGenerateButtonsState(); // Update button states
+                updateGenerateButtonsState();
             }
         });
 
-        // Convert image to base64 for API call
         function getBase64Image(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = () => resolve(reader.result.split(',')[1]); // Get base64 part
+                reader.onload = () => resolve(reader.result.split(',')[1]);
                 reader.onerror = (error) => reject(error);
                 reader.readAsDataURL(file);
             });
         }
 
-        // Generic function to call Gemini API
-        async function callGeminiAPI(prompt, imageFile, loadingTextElement, spinnerElement, displayElement, containerElement, copyMessageElement, firestoreCollectionName) {
-            if (!currentUser) {
-                displayError('براہ کرم سبق کا منصوبہ بنانے کے لیے پہلے سائن ان کریں۔');
-                return;
-            }
+        async function callGeminiAPI(prompt, imageFile, loadingTextElement, spinnerElement, displayElement, containerElement, copyMessageElement, firestoreCollectionName, postProcessFunction = null) {
             if (!imageFile) {
                 displayError('براہ کرم ایک تصویر منتخب کریں۔');
                 return;
@@ -520,15 +425,12 @@
 
                 const payload = { contents: chatHistory };
                 
-                const idToken = await currentUser.getIdToken();
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`;
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${idToken}` // Use Firebase ID token for authorization
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
 
@@ -537,50 +439,64 @@
                 if (result.candidates && result.candidates.length > 0 &&
                     result.candidates[0].content && result.candidates[0].content.parts &&
                     result.candidates[0].content.parts.length > 0) {
-                    const generatedText = result.candidates[0].content.parts[0].text;
-                    displayElement.textContent = generatedText;
+                    let generatedText = result.candidates[0].content.parts[0].text;
+                    
+                    if (postProcessFunction) {
+                        generatedText = postProcessFunction(generatedText);
+                    }
+
+                    displayElement.innerHTML = generatedText;
                     containerElement.classList.remove('hidden');
 
-                    // Save to Firestore
-                    if (db && currentUser.uid) {
+                    if (db && currentUserId) {
                         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                        const collectionRef = collection(db, `/artifacts/${appId}/users/${currentUser.uid}/${firestoreCollectionName}`);
+                        const collectionRef = collection(db, `/artifacts/${appId}/users/${currentUserId}/${firestoreCollectionName}`);
                         await addDoc(collectionRef, {
                             timestamp: serverTimestamp(),
                             imageName: imageFile.name,
-                            generatedContent: generatedText, // Generic field for content
-                            userEmail: currentUser.email
+                            generatedContent: generatedText,
+                            userType: 'anonymous'
                         });
                     } else {
                         console.warn("Firestore میں محفوظ نہیں کیا جا سکا: DB یا صارف ID دستیاب نہیں ہے۔");
                     }
                 } else {
                     displayError('مواد بنانے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔');
-                    console.error("API رسپانس کی ساخت غیر متوقع ہے:", result);
+                    console.error("API رسپونس کی ساخت غیر متوقع ہے:", result);
                 }
             } catch (err) {
                 displayError('مواد بنانے میں خرابی: ' + err.message);
                 console.error("API کال میں خرابی:", err);
             } finally {
-                loadingTextElement.textContent = loadingTextElement.originalText; // Restore original button text
+                loadingTextElement.textContent = loadingTextElement.originalText;
                 spinnerElement.classList.add('hidden');
-                updateGenerateButtonsState(); // Re-enable buttons
+                updateGenerateButtonsState();
             }
         }
 
-        // Store original button texts
         generateLessonPlanBtnText.originalText = generateLessonPlanBtnText.textContent;
         generateSummaryBtnText.originalText = generateSummaryBtnText.textContent;
         generateQuizBtnText.originalText = generateQuizBtnText.textContent;
 
+        function postProcessLessonPlan(text) {
+            text = text.replace(/استاد کیا پڑھائے گا/g, '<span class="highlight-btn">استاد کیا پڑھائے گا</span>');
+            text = text.replace(/کیسے پڑھائے گا/g, '<span class="highlight-btn">کیسے پڑھائے گا</span>');
+            text = text.replace(/کیوں پڑھائے گا/g, '<span class="highlight-btn">کیوں پڑھائے گا</span>');
+            return text;
+        }
 
-        // Generate Lesson Plan
+        function postProcessSummary(text) {
+            text = text.replace(/خلاصہ(:)?/g, '<span class="highlight-btn">خلاصہ</span>');
+            return text;
+        }
+
+        function postProcessQuiz(text) {
+            text = text.replace(/سوال نمبر (\d+)/g, '<span class="highlight-btn">سوال نمبر $1</span>');
+            return text;
+        }
+
         generateLessonPlanBtn.addEventListener('click', async () => {
-            const prompt = `اس تصویر میں موجود مواد کی بنیاد پر ایک مختصر سبق کا منصوبہ (lesson plan) تیار کریں۔ سبق کے منصوبے میں صرف مندرجہ ذیل تین نکات شامل ہوں:
-            1. استاد کیا پڑھائے گا (What to teach)
-            2. کیسے پڑھائے گا (How to teach)
-            3. کیوں پڑھائے گا (Why to teach)
-            یہ منصوبہ اردو میں ہونا چاہیے اور ہر نکتے کو مختصر اور واضح طور پر بیان کیا جائے۔`;
+            const prompt = `اس تصویر میں موجود مواد کی بنیاد پر ایک مختصر سبق کا منصوبہ (lesson plan) تیار کریں۔ سبق کے منصوبے میں صرف مندرجہ ذیل تین نکات شامل ہوں: استاد کیا پڑھائے گا، کیسے پڑھائے گا، کیوں پڑھائے گا. یہ منصوبہ اردو میں ہونا چاہیے اور ہر نکتے کو مختصر اور واضح طور پر بیان کیا جائے۔`;
             await callGeminiAPI(
                 prompt,
                 window.selectedImage,
@@ -589,13 +505,13 @@
                 lessonPlanDisplay,
                 lessonPlanContainer,
                 lessonPlanCopyMessage,
-                'lesson_plans'
+                'lesson_plans',
+                postProcessLessonPlan
             );
         });
 
-        // Generate Summary
         generateSummaryBtn.addEventListener('click', async () => {
-            const prompt = `اس تصویر میں موجود مواد کا ایک مختصر اور جامع خلاصہ (summary) تیار کریں۔ یہ خلاصہ اردو میں ہونا چاہیے۔`;
+            const prompt = `اس تصویر میں موجود مواد کا ایک مختصر اور جامع خلاصہ (summary) تیار کریں۔ یہ خلاصہ اردو میں ہونا چاہیے اور اس کے شروع میں صرف "خلاصہ" کا لفظ استعمال کریں۔`;
             await callGeminiAPI(
                 prompt,
                 window.selectedImage,
@@ -604,13 +520,13 @@
                 summaryDisplay,
                 summaryContainer,
                 summaryCopyMessage,
-                'summaries'
+                'summaries',
+                postProcessSummary
             );
         });
 
-        // Generate Quiz Questions
         generateQuizBtn.addEventListener('click', async () => {
-            const prompt = `اس تصویر میں موجود مواد کی بنیاد پر 3 مختصر جواب والے سوالات (short answer questions) تیار کریں۔ سوالات اردو میں ہونے چاہییں۔`;
+            const prompt = `اس تصویر میں موجود مواد کی بنیاد پر 3 مختصر جواب والے سوالات تیار کریں اور ہر سوال کے ساتھ اس کا مختصر جواب بھی اردو میں فراہم کریں۔ سوالات اور جوابات کو واضح طور پر الگ الگ کریں۔ ہر سوال کو "سوال نمبر 1" سے شروع کریں اور جواب کو "جواب:" سے شروع کریں۔`;
             await callGeminiAPI(
                 prompt,
                 window.selectedImage,
@@ -619,11 +535,11 @@
                 quizDisplay,
                 quizContainer,
                 quizCopyMessage,
-                'quiz_questions'
+                'quiz_questions',
+                postProcessQuiz
             );
         });
 
-        // Copy content to clipboard functions
         copyLessonPlanBtn.addEventListener('click', () => {
             if (lessonPlanDisplay.textContent) {
                 const textarea = document.createElement('textarea');
@@ -660,25 +576,47 @@
             }
         });
 
-        // Font size controls
         increaseFontBtn.addEventListener('click', () => {
-            currentFontSize = Math.min(currentFontSize + 2, 30); // Max font size 30px
+            currentFontSize = Math.min(currentFontSize + 2, 30);
             lessonPlanDisplay.style.fontSize = `${currentFontSize}px`;
-            summaryDisplay.style.fontSize = `${currentFontSize}px`; // Apply to summary
-            quizDisplay.style.fontSize = `${currentFontSize}px`; // Apply to quiz
         });
 
         decreaseFontBtn.addEventListener('click', () => {
-            currentFontSize = Math.max(currentFontSize - 2, 12); // Min font size 12px
+            currentFontSize = Math.max(currentFontSize - 2, 12);
             lessonPlanDisplay.style.fontSize = `${currentFontSize}px`;
-            summaryDisplay.style.fontSize = `${currentFontSize}px`; // Apply to summary
-            quizDisplay.style.fontSize = `${currentFontSize}px`; // Apply to quiz
         });
 
-        // Set initial font size for all relevant displays
-        lessonPlanDisplay.style.fontSize = `${currentFontSize}px`;
-        summaryDisplay.style.fontSize = `${currentFontSize}px`;
-        quizDisplay.style.fontSize = `${currentFontSize}px`;
+        increaseSummaryFontBtn.addEventListener('click', () => {
+            currentFontSize = Math.min(currentFontSize + 2, 30);
+            summaryDisplay.style.fontSize = `${currentFontSize}px`;
+        });
+
+        decreaseSummaryFontBtn.addEventListener('click', () => {
+            currentFontSize = Math.max(currentFontSize - 2, 12);
+            summaryDisplay.style.fontSize = `${currentFontSize}px`;
+        });
+
+        increaseQuizFontBtn.addEventListener('click', () => {
+            currentFontSize = Math.min(currentFontSize + 2, 30);
+            quizDisplay.style.fontSize = `${currentFontSize}px`;
+        });
+
+        decreaseQuizFontBtn.addEventListener('click', () => {
+            currentFontSize = Math.max(currentFontSize - 2, 12);
+            quizDisplay.style.fontSize = `${currentFontSize}px`;
+        });
+
+        hideLessonPlanBtn.addEventListener('click', () => {
+            lessonPlanContainer.classList.toggle('hidden');
+        });
+
+        hideSummaryBtn.addEventListener('click', () => {
+            summaryContainer.classList.toggle('hidden');
+        });
+
+        hideQuizBtn.addEventListener('click', () => {
+            quizContainer.classList.toggle('hidden');
+        });
     </script>
 </body>
 </html>
