@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاضری رجسٹر - بیک اپ اور ری اسٹور</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/jameel-noori@1.1.2/jameel-noori.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Jameel Noori Nastaleeq Regular', 'Noto Nastaliq Urdu', serif;
+            background-color: #f0f4f8;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid #cbd5e0;
+            padding: 4px 2px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem;
+        }
+        th { background-color: #edf2f7; font-weight: bold; color: #2d3748; }
+        .col-id { width: 25px; }
+        .col-name { width: auto; text-align: right; padding-right: 5px; }
+        .col-record { width: 45px; }
+        .col-phone { width: 80px; }
+        .col-status { width: 70px; }
+        .col-del { width: 35px; }
+        .status-present { background-color: #dcfce7; }
+        .status-absent { background-color: #fee2e2; }
+        .status-leave { background-color: #fef3c7; }
+        .status-friday { background-color: #e0f2fe; }
+        .modal {
+            display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; backdrop-filter: blur(2px);
+        }
+        .record-card { background: white; padding: 20px; border-radius: 12px; max-width: 90%; width: 400px; }
+        .date-btn { display: flex; align-items: center; justify-content: center; background-color: #ffffff; border: 1px solid #cbd5e0; padding: 0 10px; cursor: pointer; }
+    </style>
+</head>
+<body class="p-2">
+
+    <div class="max-w-2xl mx-auto bg-white p-3 rounded-xl shadow-lg border-t-4 border-indigo-600">
+        <h1 class="text-xl font-bold text-center mb-3 text-indigo-900">حاضری رجسٹر (بیک اپ سپورٹ)</h1>
+
+        <!-- بیک اپ اور ری اسٹور سیکشن -->
+        <div class="mb-4 bg-yellow-50 p-2 rounded-lg border border-yellow-200 flex flex-wrap gap-2 justify-between items-center">
+            <div class="text-[11px] font-bold text-yellow-800">💾 ڈیٹا کی حفاظت:</div>
+            <div class="flex gap-2">
+                <button onclick="exportBackup()" class="bg-yellow-600 text-white px-2 py-1 rounded text-[10px] font-bold shadow hover:bg-yellow-700">بیک اپ ڈاؤن لوڈ کریں</button>
+                <label class="bg-blue-600 text-white px-2 py-1 rounded text-[10px] font-bold shadow cursor-pointer hover:bg-blue-700">
+                    بیک اپ اپ لوڈ
+                    <input type="file" id="importFile" class="hidden" accept=".json" onchange="importBackup(event)">
+                </label>
+            </div>
+        </div>
+
+        <!-- ملٹی رجسٹر سلیکٹر -->
+        <div class="mb-4 bg-indigo-50 p-3 rounded-lg border border-indigo-100 text-right">
+            <label class="block text-xs font-bold mb-1 text-indigo-800">محفوظ شدہ رجسٹر منتخب کریں:</label>
+            <select id="registerSelector" onchange="loadSelectedRegister()" class="w-full p-2 border rounded text-sm outline-none bg-white">
+                <option value="">-- رجسٹر منتخب کریں --</option>
+            </select>
+        </div>
+
+        <!-- نیا رجسٹر اور ڈیٹ ایروز -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+            <div class="flex">
+                <input type="text" id="registerTitleInput" class="flex-1 p-1 border rounded-r text-sm outline-none" placeholder="نیا رجسٹر نام">
+                <button onclick="createNewRegister()" class="bg-indigo-600 text-white px-3 py-1 rounded-l text-xs font-bold">نیا بنائیں</button>
+            </div>
+            
+            <div class="flex shadow-sm">
+                <button onclick="changeDate(-1)" class="date-btn rounded-r border-l-0">▶</button>
+                <input type="date" id="selectedDateInput" class="flex-1 p-1 border-y border-x-0 text-sm outline-none text-center">
+                <button onclick="changeDate(1)" class="date-btn rounded-l border-r-0">◀</button>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
+        <!-- طالب علم شامل کریں -->
+        <div class="flex gap-1 mb-3 bg-gray-50 p-2 rounded border border-dashed">
+            <input type="text" id="newStudentName" class="w-1/2 p-1 border rounded text-xs" placeholder="نام">
+            <input type="tel" id="newStudentPhone" class="w-1/4 p-1 border rounded text-xs" placeholder="فون">
+            <button onclick="addStudent()" class="w-1/4 bg-green-600 text-white rounded text-xs font-bold">شامل کریں</button>
+        </div>
+
+        <!-- ٹیبل -->
+        <div class="border rounded overflow-hidden mb-3 shadow-sm bg-white overflow-x-auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-id">#</th>
+                        <th class="col-name">نام</th>
+                        <th class="col-record">ریکارڈ</th>
+                        <th class="col-phone">رابطہ</th>
+                        <th class="col-status">حاضری</th>
+                        <th class="col-del">حذف</th>
+                    </tr>
+                </thead>
+                <tbody id="studentList"></tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-between items-center mb-4 px-1">
+            <button onclick="saveAllData()" class="bg-indigo-700 text-white px-5 py-1.5 rounded-lg text-xs font-bold shadow">ڈیٹا محفوظ کریں</button>
+            <button onclick="downloadPDF()" class="bg-red-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold">PDF رپورٹ</button>
+        </div>
+
+        <div class="bg-red-50 p-2 rounded border border-red-100">
+            <h3 class="text-xs font-bold text-red-700 mb-1">🗓️ گزشتہ روز کے غیر حاضر:</h3>
+            <div id="absentList" class="flex flex-wrap gap-1 text-[11px] text-red-800"></div>
+        </div>
+
+        <div class="mt-4 flex justify-between px-1 text-[10px]">
+            <button onclick="deleteCurrentRegister()" class="text-red-500 underline">رجسٹر مٹائیں</button>
+            <button onclick="clearSystem()" class="text-gray-400 underline">سسٹم ری سیٹ</button>
+        </div>
+    </div>
+
+    <!-- ریکارڈ موڈل -->
+    <div id="recordModal" class="modal">
+        <div class="record-card relative">
+            <button onclick="closeRecord()" class="absolute top-2 left-2 text-gray-400 text-2xl">&times;</button>
+            <h2 id="recStudentName" class="text-2xl font-bold text-indigo-800 border-b pb-2 mb-4"></h2>
+            <div class="space-y-4 text-sm text-right">
+                <p><strong>فون نمبر:</strong> <span id="recStudentPhone" class="font-mono text-indigo-600"></span></p>
+                <div class="border p-3 rounded-lg bg-gray-50 text-center">
+                    <h4 class="font-bold mb-3 text-indigo-900">حاضری رپورٹ (موجودہ مہینہ)</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-green-100 p-2 rounded border border-green-200">
+                            <div class="text-[10px]">حاضر</div>
+                            <div id="recPresentCount" class="text-xl font-bold text-green-700">0</div>
+                        </div>
+                        <div class="bg-red-100 p-2 rounded border border-red-200">
+                            <div class="text-[10px]">غیر حاضر</div>
+                            <div id="recAbsentCount" class="text-xl font-bold text-red-700">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeRecord()" class="mt-6 w-full bg-indigo-600 text-white py-2 rounded-lg font-bold">بند کریں</button>
+        </div>
+    </div>
+
+    <script>
+        let allData = JSON.parse(localStorage.getItem('multi_att_system')) || {};
+        let currentRegister = localStorage.getItem('last_opened_reg') || "";
+        const listEl = document.getElementById('studentList');
+        const dateInput = document.getElementById('selectedDateInput');
+        const titleInput = document.getElementById('registerTitleInput');
+        const regSelector = document.getElementById('registerSelector');
+        dateInput.value = new Date().toISOString().split('T')[0];
+
+        function changeDate(days) {
+            const d = new Date(dateInput.value);
+            d.setDate(d.getDate() + days);
+            dateInput.value = d.toISOString().split('T')[0];
+            render();
+        }
+
+        function updateSelector() {
+            regSelector.innerHTML = '<option value="">-- رجسٹر منتخب کریں --</option>';
+            Object.keys(allData).forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name; opt.textContent = name;
+                if(name === currentRegister) opt.selected = true;
+                regSelector.appendChild(opt);
+            });
+        }
+
+        function createNewRegister() {
+            const name = titleInput.value.trim();
+            if(!name) return alert("نام لکھیں");
+            if(!allData[name]) allData[name] = { students: [], history: {} };
+            currentRegister = name; saveSystem(); updateSelector(); render();
+        }
+
+        function loadSelectedRegister() {
+            const selected = regSelector.value;
+            if(!selected) return;
+            currentRegister = selected; titleInput.value = selected;
+            saveSystem(); render();
+        }
+
+        function addStudent() {
+            if(!currentRegister) return alert("رجسٹر منتخب کریں");
+            const name = document.getElementById('newStudentName').value.trim();
+            const phone = document.getElementById('newStudentPhone').value.trim();
+            if (!name) return;
+            allData[currentRegister].students.push({ id: Date.now(), name, phone: phone || "" });
+            document.getElementById('newStudentName').value = "";
+            document.getElementById('newStudentPhone').value = "";
+            render(); saveSystem();
+        }
+
+        function render() {
+            listEl.innerHTML = "";
+            if(!currentRegister || !allData[currentRegister]) {
+                listEl.innerHTML = '<tr><td colspan="6" class="p-4 text-gray-400">کوئی رجسٹر منتخب نہیں</td></tr>';
+                return;
+            }
+            const data = allData[currentRegister];
+            const date = dateInput.value;
+            const isFri = new Date(date).getDay() === 5;
+            data.students.forEach((s, i) => {
+                const status = (data.history[date] && data.history[date][s.id]) || (isFri ? "F" : "P");
+                let cls = status === "P" ? "status-present" : status === "A" ? "status-absent" : status === "L" ? "status-leave" : "status-friday";
+                const tr = document.createElement('tr');
+                tr.className = cls;
+                tr.innerHTML = `
+                    <td class="col-id">${i + 1}</td>
+                    <td class="col-name font-bold text-right">${s.name}</td>
+                    <td class="col-record">
+                        <button onclick="showRecord(${s.id})" class="bg-white border text-indigo-600 text-[10px] px-1 rounded">تفصیل</button>
+                    </td>
+                    <td class="col-phone">
+                        <div class="flex justify-around">
+                            <a href="tel:${s.phone}">📞</a>
+                            <button onclick="wa('${s.phone}', '${s.name}')">💬</button>
+                        </div>
+                    </td>
+                    <td class="col-status">
+                        <select onchange="updateAtt(${s.id}, this.value)" class="w-full bg-transparent text-[10px] border-none outline-none font-bold">
+                            <option value="P" ${status === "P" ? "selected" : ""}>حاضر</option>
+                            <option value="A" ${status === "A" ? "selected" : ""}>غیر</option>
+                            <option value="L" ${status === "L" ? "selected" : ""}>رخصت</option>
+                            <option value="F" ${status === "F" ? "selected" : ""}>جمعہ</option>
+                        </select>
+                    </td>
+                    <td class="col-del"><button onclick="del(${s.id})" class="text-red-300">✖</button></td>
+                `;
+                listEl.appendChild(tr);
+            });
+            updateHistoryUI();
+        }
+
+        function updateAtt(id, val) {
+            const d = dateInput.value;
+            if(!allData[currentRegister].history[d]) allData[currentRegister].history[d] = {};
+            allData[currentRegister].history[d][id] = val;
+            saveSystem(); render();
+        }
+
+        function showRecord(id) {
+            const data = allData[currentRegister];
+            const s = data.students.find(x => x.id === id);
+            document.getElementById('recStudentName').innerText = s.name;
+            document.getElementById('recStudentPhone').innerText = s.phone || "درج نہیں";
+            let pCount = 0, aCount = 0;
+            const currentMonth = dateInput.value.substring(0, 7);
+            Object.keys(data.history).forEach(d => {
+                if(d.startsWith(currentMonth) && data.history[d][id]) {
+                    if(data.history[d][id] === 'P') pCount++;
+                    if(data.history[d][id] === 'A') aCount++;
+                }
+            });
+            document.getElementById('recPresentCount').innerText = pCount;
+            document.getElementById('recAbsentCount').innerText = aCount;
+            document.getElementById('recordModal').style.display = 'flex';
+        }
+
+        function closeRecord() { document.getElementById('recordModal').style.display = 'none'; }
+
+        function updateHistoryUI() {
+            const list = document.getElementById('absentList');
+            list.innerHTML = ""; if(!currentRegister) return;
+            const data = allData[currentRegister];
+            const dates = Object.keys(data.history).sort().reverse();
+            const cur = dateInput.value;
+            const prev = dates.find(d => d < cur);
+            if(prev) {
+                Object.entries(data.history[prev]).forEach(([id, st]) => {
+                    if(st === 'A') {
+                        const s = data.students.find(x => x.id == id);
+                        if(s) list.innerHTML += `<span class="bg-red-100 px-2 py-0.5 rounded-full m-0.5 border border-red-200">${s.name}</span> `;
+                    }
+                });
+            }
+            if(!list.innerHTML) list.innerHTML = `<span class="italic text-gray-400">پچھلا ریکارڈ نہیں ملا</span>`;
+        }
+
+        function wa(p, n) {
+            if(!p) return alert("نمبر درج نہیں");
+            window.open(`https://wa.me/${p}?text=${encodeURIComponent("السلام علیکم! " + n + " آج غیر حاضر ہے۔")}`);
+        }
+
+        function del(id) {
+            if(confirm("حذف کریں؟")) {
+                allData[currentRegister].students = allData[currentRegister].students.filter(x => x.id !== id);
+                saveSystem(); render();
+            }
+        }
+
+        function saveSystem() {
+            localStorage.setItem('multi_att_system', JSON.stringify(allData));
+            localStorage.setItem('last_opened_reg', currentRegister);
+        }
+
+        function saveAllData() { saveSystem(); alert("ڈیٹا محفوظ ہو گیا!"); }
+
+        // بیک اپ ایکسپورٹ
+        function exportBackup() {
+            const dataStr = JSON.stringify(allData);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = 'attendance_backup_' + new Date().toLocaleDateString() + '.json';
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        // بیک اپ امپورٹ
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (confirm("کیا آپ واقعی یہ بیک اپ اپ لوڈ کرنا چاہتے ہیں؟ موجودہ ڈیٹا اس سے بدل جائے گا۔")) {
+                        allData = importedData;
+                        saveSystem();
+                        updateSelector();
+                        render();
+                        alert("بیک اپ کامیابی سے لوڈ ہو گیا!");
+                    }
+                } catch (err) {
+                    alert("خرابی: یہ بیک اپ فائل درست نہیں ہے۔");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function deleteCurrentRegister() {
+            if(confirm(`کیا آپ "${currentRegister}" مٹانا چاہتے ہیں؟`)) {
+                delete allData[currentRegister]; currentRegister = ""; titleInput.value = "";
+                saveSystem(); updateSelector(); render();
+            }
+        }
+
+        function clearSystem() {
+            if(confirm("پورا سسٹم ری سیٹ؟")) { localStorage.clear(); location.reload(); }
+        }
+
+        function downloadPDF() {
+            html2pdf().from(document.body).save(`${currentRegister || 'Report'}_${dateInput.value}.pdf`);
+        }
+
+        window.onload = () => {
+            updateSelector();
+            if(currentRegister) titleInput.value = currentRegister;
+            render();
+        };
+        dateInput.onchange = render;
+    </script>
+</body>
+</html>
